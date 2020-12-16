@@ -9,3 +9,5 @@ package-lock.json
 cargo-ok
 .env
 *.db
+.vscode
+dist

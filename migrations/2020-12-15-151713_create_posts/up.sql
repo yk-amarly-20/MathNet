@@ -2,7 +2,8 @@
 CREATE TABLE books
 (
     book_id INTEGER NOT NULL PRIMARY KEY,
-    title VARCHAR NOT NULL
+    title VARCHAR NOT NULL,
+    num_posts INTEGER DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE posts
