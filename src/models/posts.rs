@@ -6,7 +6,7 @@ pub struct Post {
     pub book_id: i32,
     pub user_id: i32,
     pub page: i32,
-    pub text: String,
+    pub body: String,
 }
 
 #[derive(Insertable)]
@@ -15,5 +15,5 @@ pub struct NewPost<'a> {
     pub book_id: i32,
     pub user_id: i32,
     pub page: i32,
-    pub text: &'a str,
+    pub body: &'a str,
 }
