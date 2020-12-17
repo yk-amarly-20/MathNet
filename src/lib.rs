@@ -71,6 +71,7 @@ pub fn register_new_book(title: &str) -> usize {
         .expect("Error saving new books")
 }
 
+#[wasm_bindgen]
 pub fn get_popular_books() -> String {
     use schema::books::dsl::{num_posts, books};
 
@@ -118,6 +119,7 @@ mod test {
     }
 
     // deadlock起こるから結合テストで
+    /*
     #[test]
     fn test_register_new_book_and_crate_posts() {
         use crate::register_new_book;
@@ -131,4 +133,16 @@ mod test {
         assert_eq!(1, register_new_book(test_title));
         assert_eq!(create_posts(test_book_id, test_user_id, test_page, test_text), 1);
     }
+    */
+
+    /*
+    fn test_get_popular_books() {
+        use crate::establish_connection;
+        use crate::register_new_book;
+        use crate::create_posts;
+        use crate::get_popular_books;
+
+        let
+    }
+    */
 }
