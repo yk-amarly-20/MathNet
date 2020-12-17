@@ -2,6 +2,7 @@ table! {
     books (book_id) {
         book_id -> Integer,
         title -> Text,
+        num_posts -> Integer,
     }
 }
 
@@ -11,7 +12,7 @@ table! {
         book_id -> Integer,
         user_id -> Integer,
         page -> Integer,
-        text -> Nullable<Text>,
+        body -> Nullable<Text>,
     }
 }
 
