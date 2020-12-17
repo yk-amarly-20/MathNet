@@ -12,7 +12,7 @@ CREATE TABLE posts
     book_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
     page INTEGER NOT NULL,
-    "text" TEXT
+    body TEXT
 );
 
 CREATE TABLE users
