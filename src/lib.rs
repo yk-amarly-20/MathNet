@@ -30,13 +30,28 @@ pub fn establish_connection() -> SqliteConnection {
 }
 
 pub fn create_posts(book_id: i32, user_id: i32,
-                    page: i32, text: &str) -> usize {
+                    page: i32, body: &str) -> usize {
 
     use crate::schema::posts;
-    let new_post = NewPost {book_id, user_id, page, text};
+    let new_post = NewPost {book_id: book_id, user_id: user_id, page: page, body: body};
 
     let conn = establish_connection();
 
+    let book: Book = schema::books::dsl::books
+        .find(book_id)
+        .first(&conn)
+        .unwrap();
+    let num_posts = book.num_posts;
+
+    let conn = establish_connection();
+    let target = schema::books::dsl::books.filter(schema::books::dsl::book_id.eq(book_id));
+    diesel::update(target)
+        .set(schema::books::dsl::num_posts.eq(num_posts + 1))
+        .execute(&conn)
+        .expect("No books");
+
+
+    let conn = establish_connection();
     diesel::insert_into(posts::table)
         .values(&new_post)
         .execute(&conn)
@@ -90,9 +105,11 @@ pub fn greet() {
 mod test {
     use std::any::type_name;
 
+    #[allow(dead_code)]
     fn type_of<T>(_: T) -> &'static str {
         type_name::<T>()
     }
+
     #[test]
     fn test_establish_connection() {
         use crate::establish_connection;
@@ -100,11 +117,18 @@ mod test {
         let _ = establish_connection();
     }
 
+    // deadlock起こるから結合テストで
     #[test]
-    fn test_register_new_book() {
+    fn test_register_new_book_and_crate_posts() {
         use crate::register_new_book;
+        use crate::create_posts;
 
         let test_title = "関数解析";
+        let test_book_id = 2;
+        let test_user_id = 0;
+        let test_page = 200;
+        let test_text = "ここがわかりません。";
         assert_eq!(1, register_new_book(test_title));
+        assert_eq!(create_posts(test_book_id, test_user_id, test_page, test_text), 1);
     }
 }
