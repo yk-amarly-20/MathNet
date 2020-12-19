@@ -1,25 +1,25 @@
 table! {
     books (book_id) {
-        book_id -> Integer,
-        title -> Text,
-        num_posts -> Integer,
+        book_id -> Int4,
+        title -> Varchar,
+        num_posts -> Int4,
     }
 }
 
 table! {
     posts (post_id) {
-        post_id -> Integer,
-        book_id -> Integer,
-        user_id -> Integer,
-        page -> Integer,
-        body -> Nullable<Text>,
+        post_id -> Int4,
+        book_id -> Int4,
+        user_id -> Int4,
+        page -> Int4,
+        body -> Text,
     }
 }
 
 table! {
     users (user_id) {
-        user_id -> Integer,
-        email_adress -> Text,
+        user_id -> Int4,
+        email_adress -> Varchar,
     }
 }
 
