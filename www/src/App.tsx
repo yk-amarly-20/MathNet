@@ -2,13 +2,18 @@ import React from "react";
 import * as wasm from "math-net";
 import { BrowserRouter, Switch, Route, Router } from 'react-router-dom';
 import Header from "./components/Layouts/Head";
+import PopularCard from "./components/Popular";
 
 const App: React.FC = () => {
-  wasm.greet();
   return (
-    <header>
-      <Header title="MathNet" />
-    </header>
+    <div>
+      <header>
+        <Header title="MathNet" />
+      </header>
+      <body>
+        <PopularCard />
+      </body>
+    </div>
   );
 };
 
