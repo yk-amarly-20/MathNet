@@ -13,19 +13,18 @@ pub mod models;
 pub mod schema;
 
 use models::books::Book;
-// use schema::books;
 use self::models::posts::NewPost;
 use self::models::books::NewBook;
 use diesel::prelude::*;
-use diesel::sqlite::SqliteConnection;
+use diesel::pg::PgConnection;
 use dotenv::dotenv;
 use std::env;
 
-pub fn establish_connection() -> SqliteConnection {
+pub fn establish_connection() -> PgConnection {
     dotenv().ok();
 
     let database_url = env::var("DATABASE_URL").expect("URL not defined");
-    SqliteConnection::establish(&database_url)
+    PgConnection::establish(&database_url)
         .expect(&format!("Error connecting to {}", database_url))
 }
 
@@ -49,7 +48,6 @@ pub fn create_posts(book_id: i32, user_id: i32,
         .set(schema::books::dsl::num_posts.eq(num_posts + 1))
         .execute(&conn)
         .expect("No books");
-
 
     let conn = establish_connection();
     diesel::insert_into(posts::table)
@@ -91,16 +89,6 @@ pub fn get_popular_books() -> String {
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
-
-#[wasm_bindgen]
-extern {
-    fn alert(s: &str);
-}
-
-#[wasm_bindgen]
-pub fn greet() {
-    unsafe{alert("Hello, math-net!");}
-}
 
 #[cfg(test)]
 mod test {
