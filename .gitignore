@@ -11,3 +11,6 @@ cargo-ok
 *.db
 .vscode
 dist
+.DS_Store
+Dockerfile
+tmp.txt
