@@ -20,14 +20,27 @@ use diesel::pg::PgConnection;
 use dotenv::dotenv;
 use std::env;
 
+/// Establish connection to postgresql's database.
 pub fn establish_connection() -> PgConnection {
     dotenv().ok();
 
+    /// Write database url in .env
     let database_url = env::var("DATABASE_URL").expect("URL not defined");
     PgConnection::establish(&database_url)
         .expect(&format!("Error connecting to {}", database_url))
 }
 
+/// Write new posts in database.
+/// When new posts are generated, db books.num_posts have to incremented.
+///
+/// # Auguments
+/// * `book_id` - The book id of new posts.
+/// * `user_id` - The user_id of poster. (TODO: implement login)
+/// * `page` - New posts' page of the book.
+/// * `body` - Posted body.
+///
+/// # Returns
+/// Num of new posts.
 pub fn create_posts(book_id: i32, user_id: i32,
                     page: i32, body: &str) -> usize {
 
@@ -42,6 +55,8 @@ pub fn create_posts(book_id: i32, user_id: i32,
         .unwrap();
     let num_posts = book.num_posts;
 
+    // too complex impl...
+    // I want to implement more easily.
     let conn = establish_connection();
     let target = schema::books::dsl::books.filter(schema::books::dsl::book_id.eq(book_id));
     diesel::update(target)
@@ -56,6 +71,8 @@ pub fn create_posts(book_id: i32, user_id: i32,
         .expect("Error saving new posts")
 }
 
+/// Register new books to database.
+/// This function is called when new posts' book is not in database.
 pub fn register_new_book(title: &str) -> usize {
 
     use crate::schema::books;
@@ -69,6 +86,9 @@ pub fn register_new_book(title: &str) -> usize {
         .expect("Error saving new books")
 }
 
+/// Get most popular books (three).
+/// 'Popular' is defined by 'num_posts'
+/// Returns information of books by Json
 #[wasm_bindgen]
 pub fn get_popular_books() -> String {
     use schema::books::dsl::{num_posts, books};
