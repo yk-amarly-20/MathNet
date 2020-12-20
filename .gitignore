@@ -1,16 +1,8 @@
 /target
-**/*.rs.bk
 Cargo.lock
 bin/
-pkg/
-wasm-pack.log
-node_modules
-package-lock.json
-cargo-ok
 .env
 *.db
 .vscode
-dist
 .DS_Store
 Dockerfile
-tmp.txt
