@@ -1,0 +1,9 @@
+[package]
+name = "math_net_web"
+version = "0.1.0"
+authors = ["yk-amarly-20 <y.k.83600260@icloud.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
