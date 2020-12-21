@@ -1,4 +1,5 @@
 use crate::schema::posts;
+use std::convert::TryInto;
 
 #[derive(Queryable)]
 pub struct Post {

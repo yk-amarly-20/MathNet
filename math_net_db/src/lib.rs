@@ -6,6 +6,7 @@ extern crate dotenv;
 extern crate serde_derive;
 extern crate serde;
 extern crate serde_json;
+extern crate math_net_core;
 
 pub mod models;
 pub mod schema;
@@ -13,10 +14,12 @@ pub mod schema;
 use models::books::Book;
 use self::models::posts::NewPost;
 use self::models::books::NewBook;
+use math_net_core::book;
 use diesel::prelude::*;
 use diesel::pg::PgConnection;
 use dotenv::dotenv;
 use std::env;
+use std::convert::TryInto;
 
 #[derive(Debug)]
 pub enum Error {
@@ -55,13 +58,18 @@ pub fn truncate_all_tables(conn: &PgConnection) -> Result<(), diesel::result::Er
     Ok(())
 }
 
-/*
-pub fn load_all_books(conn: &PgConnection) -> Option<Vec<Book>> {
+pub fn load_all_books(conn: &PgConnection) -> Option<Vec<book::Book>> {
     schema::books::table
         .load(conn)
-        .
+        .map(|results: Vec<Book>| {
+            results
+                .into_iter()
+                .filter_map(|b: Book| b.try_into().ok())
+                .collect::<Vec<book::Book>>()
+        })
+        .ok()
 }
-*/
+
 
 /// Write new posts in database.
 /// When new posts are generated, db books.num_posts have to incremented.
