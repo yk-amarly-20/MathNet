@@ -2,6 +2,7 @@ mod utils;
 #[macro_use]
 extern crate diesel;
 extern crate dotenv;
+extern crate chrono;
 #[macro_use]
 extern crate serde_derive;
 extern crate serde;
@@ -14,10 +15,12 @@ pub mod schema;
 use models::books::Book;
 use self::models::posts::NewPost;
 use self::models::books::NewBook;
+use self::models::users::NewUsers;
 use math_net_core::book;
 use diesel::prelude::*;
 use diesel::pg::PgConnection;
 use dotenv::dotenv;
+use chrono::prelude::Utc;
 use std::env;
 use std::convert::TryInto;
 
@@ -82,11 +85,12 @@ pub fn load_all_books(conn: &PgConnection) -> Option<Vec<book::Book>> {
 ///
 /// # Returns
 /// Num of new posts.
-pub fn create_posts(book_id: i32, user_id: i32,
+pub fn create_post(book_id: i32, user_id: i32,
                     page: i32, body: &str) -> usize {
 
     use crate::schema::posts;
-    let new_post = NewPost {book_id: book_id, user_id: user_id, page: page, body: body};
+    let new_post = NewPost {book_id: book_id, user_id: user_id, page: page,
+        body: body, posted_at: Utc::now().naive_utc()};
 
     let conn = establish_connection();
 
@@ -112,12 +116,25 @@ pub fn create_posts(book_id: i32, user_id: i32,
         .expect("Error saving new posts")
 }
 
+/// register new user.
+pub fn create_user(email_adress: &str) -> usize {
+    use crate::schema::users;
+
+    let new_user = NewUsers {email_adress: email_adress, created_at: Utc::now().naive_utc()};
+
+    let conn = establish_connection();
+    diesel::insert_into(users::table)
+        .values(&new_user)
+        .execute(&conn)
+        .expect("Error saving new user")
+}
+
 /// Register new books to database.
 /// This function is called when new posts' book is not in database.
 pub fn register_new_book(title: &str) -> usize {
 
     use crate::schema::books;
-    let new_book = NewBook {title: title};
+    let new_book = NewBook {title: title, created_at: Utc::now().naive_utc()};
 
     let conn = establish_connection();
 
@@ -146,6 +163,22 @@ pub fn get_popular_books() -> Option<Vec<Book>> {
     let results = books
         .order(num_posts.desc())
         .limit(3)
+        .load::<Book>(&conn)
+        .expect("Error loading");
+
+    Some(results)
+}
+
+/// Get ten books order by created timestamp.
+pub fn get_books_order_by_created() -> Option<Vec<Book>> {
+
+    use schema::books::dsl::{created_at, books};
+
+    let conn = establish_connection();
+
+    let results = books
+        .order(created_at.desc())
+        .limit(10)
         .load::<Book>(&conn)
         .expect("Error loading");
 
