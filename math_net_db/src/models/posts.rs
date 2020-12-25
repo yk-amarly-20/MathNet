@@ -1,5 +1,5 @@
 use crate::schema::posts;
-use std::convert::TryInto;
+use chrono::NaiveDateTime;
 
 #[derive(Queryable)]
 pub struct Post {
@@ -8,6 +8,7 @@ pub struct Post {
     pub user_id: i32,
     pub page: i32,
     pub body: String,
+    pub posted_at: NaiveDateTime,
 }
 
 #[derive(Insertable)]
@@ -17,4 +18,5 @@ pub struct NewPost<'a> {
     pub user_id: i32,
     pub page: i32,
     pub body: &'a str,
+    pub posted_at: NaiveDateTime,
 }
