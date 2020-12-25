@@ -3,6 +3,7 @@ table! {
         book_id -> Int4,
         title -> Varchar,
         num_posts -> Int4,
+        created_at -> Timestamp,
     }
 }
 
@@ -13,6 +14,7 @@ table! {
         user_id -> Int4,
         page -> Int4,
         body -> Text,
+        posted_at -> Timestamp,
     }
 }
 
@@ -20,6 +22,7 @@ table! {
     users (user_id) {
         user_id -> Int4,
         email_adress -> Varchar,
+        created_at -> Timestamp,
     }
 }
 
